@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package perf.helper.proto.common.v1;
+
+message Uuid {
+  fixed64 hi = 1;
+  fixed64 lo = 2;
+}

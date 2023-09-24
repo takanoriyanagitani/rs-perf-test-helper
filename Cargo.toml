@@ -1,0 +1,66 @@
+[package]
+name = "rs-perf-test-helper"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.log]
+version = "0.4"
+default-features = false
+features = [
+]
+
+[dependencies.tokio]
+version = "1.32"
+default-features = false
+features = [
+	"sync",
+	"macros",
+]
+
+[dependencies.prost]
+version = "0.12"
+default-features = false
+features = [
+	"prost-derive",
+	"std",
+]
+
+[dependencies.prost-types]
+version = "0.12"
+default-features = false
+features = [
+	"std",
+]
+
+[dependencies.uuid]
+version = "1.4"
+optional = true
+default-features = false
+features = [
+	"v4",
+]
+
+[dependencies.tonic]
+version = "0.10"
+default-features = false
+features = [
+	"transport",
+	"codegen",
+	"prost",
+]
+
+[build-dependencies.tonic-build]
+version = "0.10"
+default-features = false
+features = [
+	"prost",
+]
+
+[features]
+uv4 = [
+	"uuid",
+]
+
+default = [
+	"uv4",
+]

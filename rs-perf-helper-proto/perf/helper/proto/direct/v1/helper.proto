@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package perf.helper.proto.direct.v1;
+
+import "google/protobuf/timestamp.proto";
+import "perf/helper/proto/common/v1/uuid.proto";
+
+message ConvSvc {
+  message ConvertRequest {
+    perf.helper.proto.common.v1.Uuid request_id = 1;
+    bytes seed = 2;
+  }
+  message ConvertResponse {
+    google.protobuf.Timestamp converted = 1;
+    bytes generated = 2;
+  }
+}
+
+service ConvertService {
+  rpc Convert(ConvSvc.ConvertRequest) returns (ConvSvc.ConvertResponse);
+}
