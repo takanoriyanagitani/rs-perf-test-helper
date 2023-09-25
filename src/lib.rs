@@ -1,4 +1,5 @@
 pub use tonic;
+pub use log;
 
 pub mod rpc {
     pub mod perf {

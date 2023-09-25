@@ -1,0 +1,28 @@
+[package]
+name = "rs-time2double-mut"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.rs-perf-test-helper]
+path = "../../../../../"
+default-features = false
+features = [
+    "uv4",
+]
+
+[dependencies.tokio]
+version = "1.32.0"
+default-features = false
+features = [
+    "rt-multi-thread",
+    "macros",
+]
+
+[dependencies.env_logger]
+version = "0.10.0"
+default-features = false
+features = [
+	"auto-color",
+	"humantime",
+	"regex",
+]
