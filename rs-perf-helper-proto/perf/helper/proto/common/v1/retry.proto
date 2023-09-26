@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package perf.helper.proto.common.v1;
+
+import "google/protobuf/duration.proto";
+
+message Retry {
+  fixed64 retry_max = 1;
+  google.protobuf.Duration interval = 2; // internal polling interval
+  google.protobuf.Duration timeout = 3;
+}

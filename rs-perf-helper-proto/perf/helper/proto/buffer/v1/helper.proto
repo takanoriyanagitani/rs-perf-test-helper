@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package perf.helper.proto.buffer.v1;
+
+import "google/protobuf/timestamp.proto";
+import "perf/helper/proto/common/v1/retry.proto";
+import "perf/helper/proto/common/v1/uuid.proto";
+import "perf/helper/proto/direct/v1/helper.proto";
+
+message ReqBuf {
+  message SaveRequest {
+    perf.helper.proto.common.v1.Uuid request_id = 1;
+    perf.helper.proto.common.v1.Uuid reply_id = 2;
+    perf.helper.proto.direct.v1.ConvSvc.ConvertRequest req = 3;
+    google.protobuf.Timestamp received = 4;
+  }
+  message SaveResponse {
+    google.protobuf.Timestamp saved = 1;
+  }
+
+  message LoadRequest {
+    perf.helper.proto.common.v1.Uuid request_id = 1;
+    perf.helper.proto.common.v1.Retry retry = 2;
+  }
+  message LoadResponse {
+    perf.helper.proto.direct.v1.ConvSvc.ConvertRequest req = 1;
+    perf.helper.proto.common.v1.Uuid reply_id = 2;
+    google.protobuf.Timestamp received = 3;
+    google.protobuf.Timestamp saved = 4;
+  }
+}
+
+service ReqBufferService {
+  rpc Save(ReqBuf.SaveRequest) returns (ReqBuf.SaveResponse);
+  rpc Load(ReqBuf.LoadRequest) returns (stream ReqBuf.LoadResponse);
+}
+
+message ResBuf {
+  message GetRequest {
+    perf.helper.proto.common.v1.Uuid request_id = 1;
+    perf.helper.proto.common.v1.Uuid reply_id = 2;
+    perf.helper.proto.common.v1.Retry retry = 3;
+  }
+  message GetResponse {
+    perf.helper.proto.direct.v1.ConvSvc.ConvertResponse res = 1;
+    google.protobuf.Timestamp received = 2;
+    google.protobuf.Timestamp saved = 3;
+    google.protobuf.Timestamp converted = 4;
+    google.protobuf.Timestamp set = 5;
+  }
+
+  message SetRequest {
+    perf.helper.proto.common.v1.Uuid request_id = 1;
+    perf.helper.proto.common.v1.Uuid reply_id = 2;
+    perf.helper.proto.direct.v1.ConvSvc.ConvertResponse res = 3;
+    google.protobuf.Timestamp received = 4;
+    google.protobuf.Timestamp saved = 5;
+    google.protobuf.Timestamp converted = 6;
+  }
+  message SetResponse {
+    google.protobuf.Timestamp set = 1;
+  }
+}
+
+service ResBufferService {
+  rpc Get(ResBuf.GetRequest) returns (stream ResBuf.GetResponse);
+  rpc Set(ResBuf.SetRequest) returns (ResBuf.SetResponse);
+}

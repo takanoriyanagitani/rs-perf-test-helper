@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package perf.helper.proto.indirect.v1;
+
+import "google/protobuf/timestamp.proto";
+import "perf/helper/proto/common/v1/uuid.proto";
+import "perf/helper/proto/direct/v1/helper.proto";
+
+message ConvReq {
+  message GetRequest {
+    perf.helper.proto.common.v1.Uuid request_id = 1;
+  }
+  message GetResponse {
+    perf.helper.proto.direct.v1.ConvSvc.ConvertRequest req = 1;
+    perf.helper.proto.common.v1.Uuid reply_id = 2;
+  }
+}
+
+service GetConvReqService {
+  rpc Get(ConvReq.GetRequest) returns (stream ConvReq.GetResponse);
+}
+
+message ConvEvt {
+  message ConvertedRequest {
+    perf.helper.proto.direct.v1.ConvSvc.ConvertResponse res = 1;
+    perf.helper.proto.common.v1.Uuid reply_id = 2;
+  }
+  message ConvertedResponse {
+    google.protobuf.Timestamp sent = 1;
+  }
+}
+
+service IndirectService {
+  rpc Converted(ConvEvt.ConvertedRequest) returns (ConvEvt.ConvertedResponse);
+}
