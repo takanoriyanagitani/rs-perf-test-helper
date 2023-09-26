@@ -1,0 +1,42 @@
+[package]
+name = "rs-time2double"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.rs-perf-test-helper]
+path = "../../../../../"
+default-features = false
+features = [
+    "uv4",
+]
+
+[dependencies.tokio]
+version = "1.32.0"
+default-features = false
+features = [
+    "rt-multi-thread",
+    "macros",
+]
+
+[dependencies.wasmtime]
+version = "13.0.0"
+default-features = false
+optional = true
+features = [
+	"async",
+	"cache",
+	"wat",
+	"jitdump",
+	"parallel-compilation",
+	"cranelift",
+	"pooling-allocator",
+	"vtune",
+]
+
+[features]
+wasmrt_wasmtime = [
+	"wasmtime",
+]
+default = [
+	"wasmrt_wasmtime",
+]
