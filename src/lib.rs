@@ -36,6 +36,10 @@ pub mod rpc {
 
 pub mod uuid;
 
+pub mod retry;
+
 pub mod convert;
 
 pub mod direct;
+
+pub mod buffer;
