@@ -5,7 +5,7 @@ use tonic::Status;
 use crate::rpc::perf::helper;
 use helper::proto::common::v1::Uuid as Cuid;
 
-#[derive(Clone, Copy)]
+#[derive(PartialEq, PartialOrd, Eq, Ord, Clone, Copy)]
 pub struct Uuid {
     raw: u128,
 }
