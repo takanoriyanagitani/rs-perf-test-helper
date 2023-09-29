@@ -8,6 +8,8 @@ import "perf/helper/proto/common/v1/uuid.proto";
 message ConvSvc {
   message ConvertRequest {
     perf.helper.proto.common.v1.Uuid request_id = 1;
+    
+    // a seed used for dummy data; e.g, unixtime
     bytes seed = 2;
   }
   message ConvertResponse {
