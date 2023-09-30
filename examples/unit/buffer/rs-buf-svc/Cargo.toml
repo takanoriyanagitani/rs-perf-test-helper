@@ -1,0 +1,30 @@
+[package]
+name = "rs-buf-svc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.rs-perf-test-helper]
+path = "../../../../"
+
+[dependencies.log]
+version = "0.4"
+default-features = false
+features = [
+]
+
+[dependencies.tokio]
+version = "1.32"
+default-features = false
+features = [
+	"rt-multi-thread",
+	"macros",
+]
+
+[dependencies.tonic]
+version = "0.10"
+default-features = false
+features = [
+	"transport",
+	"codegen",
+	"prost",
+]
