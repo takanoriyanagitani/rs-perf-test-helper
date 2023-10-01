@@ -35,7 +35,8 @@ impl Req {
     ) {
         let sz: usize = d.len();
         let too_many: bool = max_size < sz;
-        let r = too_many
+        let available: bool = !too_many;
+        let r = available
             .then_some(())
             .ok_or_else(|| Status::unavailable(format!("too many requests. size: {sz}")))
             .and_then(|_| {
