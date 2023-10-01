@@ -63,5 +63,38 @@ buf2req(){
 		perf.helper.proto.buffer.v1.ReqBufferService/Load
 }
 
-req2buf
-buf2req
+res2buf(){
+	jq \
+		-n \
+		-c \
+		--arg hi "${reply_hi}" \
+		--arg lo "${reply_lo}" \
+		'{
+			request_id: {
+				hi: 20231001,
+				lo: 73123,
+			},
+			reply_id: {
+				hi: $hi,
+				lo: $lo,
+			},
+			res: {
+				converted: "2023-09-30T22:35:05.0Z",
+				generated: "SEVM",
+			},
+			received:  "2023-09-30T22:35:03.0Z",
+			saved:     "2023-09-30T22:35:04.0Z",
+			converted: "2023-09-30T22:35:05.0Z",
+		}' |
+		grpcurl \
+		-plaintext \
+		-d @ \
+		-import-path "${protodir}" \
+		-proto perf/helper/proto/buffer/v1/helper.proto \
+		"${listen_addr}" \
+		perf.helper.proto.buffer.v1.ResBufferService/Set
+}
+
+#req2buf
+#buf2req
+res2buf
