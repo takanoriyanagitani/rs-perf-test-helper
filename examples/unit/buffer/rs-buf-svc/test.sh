@@ -95,6 +95,35 @@ res2buf(){
 		perf.helper.proto.buffer.v1.ResBufferService/Set
 }
 
-#req2buf
-#buf2req
+buf2res(){
+	jq \
+		-n \
+		-c \
+		--arg hi "${reply_hi}" \
+		--arg lo "${reply_lo}" \
+		'{
+			request_id: {
+				hi: 20231001,
+				lo: 73123,
+			},
+			reply_id: {
+				hi: $hi,
+				lo: $lo,
+			},
+			retry: {
+				retry_max: 4,
+			},
+		}' |
+		grpcurl \
+		-plaintext \
+		-d @ \
+		-import-path "${protodir}" \
+		-proto perf/helper/proto/buffer/v1/helper.proto \
+		"${listen_addr}" \
+		perf.helper.proto.buffer.v1.ResBufferService/Get
+}
+
+req2buf
+buf2req
 res2buf
+buf2res
