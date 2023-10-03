@@ -41,5 +41,6 @@ pub mod retry;
 pub mod convert;
 
 pub mod direct;
+pub mod indirect;
 
 pub mod buffer;
