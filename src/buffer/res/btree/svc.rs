@@ -24,6 +24,7 @@ use helper::proto::buffer::v1::res_buffer_service_server::ResBufferService;
 pub enum Req {
     Set(SetReq, Sender<Result<SystemTime, Status>>),
     Get(Uuid, Sender<Result<GetResponse, Status>>),
+    Del(Uuid, Sender<Result<(), Status>>),
 }
 
 impl Req {
@@ -71,6 +72,22 @@ impl Req {
         match reply.send(r).await {
             Ok(_) => {}
             Err(e) => log::warn!("Unable to send a get evt: {e}"),
+        }
+    }
+
+    async fn handle_del(
+        d: &mut BTreeMap<Uuid, GetResponse>,
+        reply_id: Uuid,
+        reply: Sender<Result<(), Status>>,
+    ) {
+        let r = d.remove(&reply_id).map(|_| ()).ok_or_else(|| {
+            Status::not_found(format!(
+                "No reply found(may be consumed). reply id: {reply_id}"
+            ))
+        });
+        match reply.send(r).await {
+            Ok(_) => {}
+            Err(e) => log::warn!("Unable to send a del evt: {e}"),
         }
     }
 }
@@ -197,6 +214,7 @@ async fn buf_svc_st_new(max_size: usize) -> BufSvcSt {
                 Some(req) => match req {
                     Req::Set(q, reply) => Req::handle_set(&mut bm, q, reply, max_size).await,
                     Req::Get(reply_id, reply) => Req::handle_get(&mut bm, reply_id, reply).await,
+                    Req::Del(reply_id, reply) => Req::handle_del(&mut bm, reply_id, reply).await,
                 },
             }
         }
