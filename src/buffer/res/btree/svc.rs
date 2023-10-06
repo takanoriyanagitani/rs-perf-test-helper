@@ -12,11 +12,13 @@ use crate::uuid::Uuid;
 
 use crate::retry::Retry;
 
+use crate::buffer::res::cmd::del::DelReq;
 use crate::buffer::res::cmd::get::GetReq;
 use crate::buffer::res::cmd::set::SetReq;
 
 use crate::rpc::perf::helper;
 
+use helper::proto::buffer::v1::res_buf::{DelRequest, DelResponse};
 use helper::proto::buffer::v1::res_buf::{GetRequest, GetResponse};
 use helper::proto::buffer::v1::res_buf::{SetRequest, SetResponse};
 use helper::proto::buffer::v1::res_buffer_service_server::ResBufferService;
@@ -125,6 +127,20 @@ impl BufSvcSt {
         res
     }
 
+    pub async fn del(&self, id: Uuid) -> Result<SystemTime, Status> {
+        let (tx, mut rx) = tokio::sync::mpsc::channel(1);
+        let req = Req::Del(id, tx);
+        self.sender
+            .send(req)
+            .await
+            .map_err(|e| Status::internal(format!("Unable to send a delete request: {e}")))?;
+        let res: Result<_, _> = rx
+            .recv()
+            .await
+            .ok_or_else(|| Status::internal("no response got"))?;
+        res.map(|_| SystemTime::now())
+    }
+
     pub async fn get(
         &self,
         req: GetReq,
@@ -199,6 +215,17 @@ impl ResBufferService for BufSvcSt {
         let set: SystemTime = self.set(checked).await?;
         let reply = SetResponse {
             set: Some(set.into()),
+        };
+        Ok(Response::new(reply))
+    }
+
+    async fn del(&self, req: Request<DelRequest>) -> Result<Response<DelResponse>, Status> {
+        let dr: DelRequest = req.into_inner();
+        let checked: DelReq = dr.try_into()?;
+        let reply_id: Uuid = checked.as_reply_id();
+        let removed: SystemTime = self.del(reply_id).await?;
+        let reply = DelResponse {
+            removed: Some(removed.into()),
         };
         Ok(Response::new(reply))
     }

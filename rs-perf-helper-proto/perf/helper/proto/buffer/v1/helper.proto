@@ -60,9 +60,18 @@ message ResBuf {
   message SetResponse {
     google.protobuf.Timestamp set = 1;
   }
+
+  message DelRequest {
+    perf.helper.proto.common.v1.Uuid request_id = 1;
+    perf.helper.proto.common.v1.Uuid reply_id = 2;
+  }
+  message DelResponse {
+    google.protobuf.Timestamp removed = 1;
+  }
 }
 
 service ResBufferService {
   rpc Get(ResBuf.GetRequest) returns (stream ResBuf.GetResponse);
   rpc Set(ResBuf.SetRequest) returns (ResBuf.SetResponse);
+  rpc Del(ResBuf.DelRequest) returns (ResBuf.DelResponse);
 }
