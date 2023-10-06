@@ -9,6 +9,13 @@ default-features = false
 features = [
 ]
 
+[dependencies.futures-core]
+version = "0.3"
+default-features = false
+features = [
+	"std",
+]
+
 [dependencies.tokio]
 version = "1.32"
 default-features = false
