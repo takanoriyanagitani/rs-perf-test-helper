@@ -20,6 +20,7 @@ use crate::rpc::perf::helper;
 
 use helper::proto::buffer::v1::res_buf::{DelRequest, DelResponse};
 use helper::proto::buffer::v1::res_buf::{GetRequest, GetResponse};
+use helper::proto::buffer::v1::res_buf::{LenRequest, LenResponse};
 use helper::proto::buffer::v1::res_buf::{SetRequest, SetResponse};
 use helper::proto::buffer::v1::res_buffer_service_server::ResBufferService;
 
@@ -27,6 +28,7 @@ pub enum Req {
     Set(SetReq, Sender<Result<SystemTime, Status>>),
     Get(Uuid, Sender<Result<GetResponse, Status>>),
     Del(Uuid, Sender<Result<(), Status>>),
+    Len(Sender<Result<u64, Status>>),
 }
 
 impl Req {
@@ -90,6 +92,14 @@ impl Req {
         match reply.send(r).await {
             Ok(_) => {}
             Err(e) => log::warn!("Unable to send a del evt: {e}"),
+        }
+    }
+
+    async fn handle_len(d: &BTreeMap<Uuid, GetResponse>, reply: Sender<Result<u64, Status>>) {
+        let sz: usize = d.len();
+        match reply.send(Ok(sz as u64)).await {
+            Ok(_) => {}
+            Err(e) => log::warn!("Unable to send a count evt: {e}"),
         }
     }
 }
@@ -229,6 +239,10 @@ impl ResBufferService for BufSvcSt {
         };
         Ok(Response::new(reply))
     }
+
+    async fn len(&self, _req: Request<LenRequest>) -> Result<Response<LenResponse>, Status> {
+        todo!()
+    }
 }
 
 async fn buf_svc_st_new(max_size: usize) -> BufSvcSt {
@@ -242,6 +256,7 @@ async fn buf_svc_st_new(max_size: usize) -> BufSvcSt {
                     Req::Set(q, reply) => Req::handle_set(&mut bm, q, reply, max_size).await,
                     Req::Get(reply_id, reply) => Req::handle_get(&mut bm, reply_id, reply).await,
                     Req::Del(reply_id, reply) => Req::handle_del(&mut bm, reply_id, reply).await,
+                    Req::Len(reply) => Req::handle_len(&bm, reply).await,
                 },
             }
         }
