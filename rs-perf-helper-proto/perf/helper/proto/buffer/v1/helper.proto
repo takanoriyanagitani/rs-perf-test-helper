@@ -78,8 +78,15 @@ message ResBuf {
 }
 
 service ResBufferService {
+  // Gets a response by reply_id
   rpc Get(ResBuf.GetRequest) returns (stream ResBuf.GetResponse);
+
+  // Sets a response for reply_id
   rpc Set(ResBuf.SetRequest) returns (ResBuf.SetResponse);
+
+  // Removes a response by reply_id
   rpc Del(ResBuf.DelRequest) returns (ResBuf.DelResponse);
+
+  // Counts number of responses in this buffer
   rpc Len(ResBuf.LenRequest) returns (ResBuf.LenResponse);
 }
