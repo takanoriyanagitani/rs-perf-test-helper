@@ -10,4 +10,10 @@ pub trait ExpireService {
     async fn expired_keys(&self) -> Result<Self::ExpiredKeysStream, Status>;
 
     async fn register_key(&self, key: Uuid) -> Result<(), Status>;
+
+    /// forget_key forgets the key registered by register_key.
+    /// This "provided method" can not be used(actual implementation required)
+    async fn forget_key(&self, _key: Uuid) -> Result<(), Status> {
+        Err(Status::unimplemented("not implemented"))
+    }
 }
