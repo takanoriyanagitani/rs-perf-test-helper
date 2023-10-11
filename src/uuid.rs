@@ -63,6 +63,15 @@ impl UuidLike for Cuid {
     }
 }
 
+impl UuidLike for &Cuid {
+    fn hi(&self) -> u64 {
+        self.hi
+    }
+    fn lo(&self) -> u64 {
+        self.lo
+    }
+}
+
 impl<U> TryFrom<Option<&U>> for Uuid
 where
     U: UuidLike,
