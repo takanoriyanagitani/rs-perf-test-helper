@@ -31,6 +31,7 @@ message ReqBuf {
 }
 
 service ReqBufferService {
+  // saves a request to this buffer
   rpc Save(ReqBuf.SaveRequest) returns (ReqBuf.SaveResponse);
   rpc Load(ReqBuf.LoadRequest) returns (stream ReqBuf.LoadResponse);
 }
