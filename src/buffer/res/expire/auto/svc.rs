@@ -55,6 +55,13 @@ where
     }
 
     async fn del(&self, req: Request<DelRequest>) -> Result<Response<DelResponse>, Status> {
+        let id: Uuid = req
+            .get_ref()
+            .reply_id
+            .as_ref()
+            .map(|u| u.into())
+            .ok_or_else(|| Status::invalid_argument("reply id missing"))?;
+        self.expire.forget_key(id).await?;
         self.buf.del(req).await
     }
 
